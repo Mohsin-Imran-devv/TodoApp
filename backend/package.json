@@ -17,9 +17,10 @@
     "concurrently": "^9.2.1",
     "nodemon": "^3.1.11",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "^4.2.4"
   },
   "dependencies": {
+    "@tailwindcss/cli": "^4.2.4",
     "body-parser": "^2.2.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
