@@ -10,11 +10,10 @@ const MONGO_URL = process.env.MONGO_URL;
 
 const app = express();
 
-// YEH LINE CHANGE KARO - apna actual frontend URL dalo
 app.use(cors({
   origin: 'https://todo-app-frontend-liart-ten.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
