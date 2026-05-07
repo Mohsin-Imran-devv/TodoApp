@@ -5,8 +5,8 @@ const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const todoItemsRouter = require("./routes/todoItemsRouter");
 const errorController = require('./controllers/errorsController')
-const MONGO_URL =
-  "mongodb+srv://root:7272@mcoding.9qq795b.mongodb.net/todo?retryWrites=true&w=majority&appName=CompleteCoding";
+
+  const MONGO_URL = process.env.MONGO_URL;
 
 const app = express();
 app.use(express.static(path.join(rootDir, "public")));
