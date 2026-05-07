@@ -1,33 +1,22 @@
-// Change this line at the top of itemService.js
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/todo`; // Updated to match your backend route
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/todo`;
 
-export const markItemAsCompleted = async (id) => {
+export const getItemsFromServer = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/${id}/completed`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    console.log('Fetching from:', API_BASE_URL);
+    const response = await fetch(API_BASE_URL);
     
     if (!response.ok) {
-      throw new Error('Failed to mark item as completed');
+      throw new Error(`Server error: ${response.status}`);
     }
     
     const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error marking item as completed:', error);
-    throw error;
-  }
-};
-
-// Update your getItemsFromServer
-export const getItemsFromServer = async () => {
-  try {
-    const response = await fetch(API_BASE_URL);
-    const data = await response.json();
-    // Map the response to match your frontend structure
+    
+    // Check if data is valid
+    if (!data.todoItems) {
+      console.error('Invalid response format:', data);
+      return [];
+    }
+    
     return data.todoItems.map(item => ({
       id: item._id,
       name: item.task,
@@ -35,12 +24,11 @@ export const getItemsFromServer = async () => {
       completed: item.completed || false
     }));
   } catch (error) {
-    console.error('Error fetching items:', error);
+    console.error('Error fetching items:', error.message);
     return [];
   }
 };
 
-// Update addItemToServer
 export const addItemToServer = async (itemName, itemDueDate) => {
   try {
     const response = await fetch(API_BASE_URL, {
@@ -54,7 +42,16 @@ export const addItemToServer = async (itemName, itemDueDate) => {
       }),
     });
     
+    if (!response.ok) {
+      throw new Error(`Failed to add item: ${response.status}`);
+    }
+    
     const data = await response.json();
+    
+    if (!data.todoItem) {
+      throw new Error('Invalid response from server');
+    }
+    
     return {
       id: data.todoItem._id,
       name: data.todoItem.task,
@@ -62,22 +59,51 @@ export const addItemToServer = async (itemName, itemDueDate) => {
       completed: data.todoItem.completed || false
     };
   } catch (error) {
-    console.error('Error adding item:', error);
+    console.error('Error adding item:', error.message);
     throw error;
   }
 };
 
-// Update deleteItemFromServer
 export const deleteItemFromServer = async (id) => {
   try {
     const response = await fetch(`${API_BASE_URL}/${id}`, {
       method: 'DELETE',
     });
     
+    if (!response.ok) {
+      throw new Error(`Failed to delete item: ${response.status}`);
+    }
+    
     const data = await response.json();
+    
+    if (!data._id) {
+      throw new Error('Invalid response from server');
+    }
+    
     return data._id;
   } catch (error) {
-    console.error('Error deleting item:', error);
+    console.error('Error deleting item:', error.message);
+    throw error;
+  }
+};
+
+export const markItemAsCompleted = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/${id}/completed`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to mark item as completed: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error marking item as completed:', error.message);
     throw error;
   }
 };

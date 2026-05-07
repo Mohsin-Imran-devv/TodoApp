@@ -8,8 +8,15 @@
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "app.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "app.js"
     }
-  ]
+  ],
+  "env": {
+    "MONGO_URL": "mongodb+srv://root:7272@mcoding.9qq795b.mongodb.net/todo?retryWrites=true&w=majority&appName=CompleteCoding"
+  }
 }
