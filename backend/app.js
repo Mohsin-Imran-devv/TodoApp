@@ -10,9 +10,9 @@ const MONGO_URL = process.env.MONGO_URL;
 
 const app = express();
 
-// CORS configuration
+// YEH LINE CHANGE KARO - apna actual frontend URL dalo
 app.use(cors({
-  origin: ['https://your-frontend-domain.vercel.app', 'http://localhost:5173'],
+  origin: 'https://todo-app-frontend-liart-ten.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -22,20 +22,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(rootDir, "public")));
 
 // Database connection
-let cachedDb = null;
-
 const connectToDatabase = async () => {
-  if (cachedDb && mongoose.connection.readyState === 1) {
-    return cachedDb;
+  if (mongoose.connection.readyState !== 1) {
+    await mongoose.connect(MONGO_URL);
+    console.log("✅ Connected to MongoDB");
   }
-  
-  await mongoose.connect(MONGO_URL);
-  cachedDb = mongoose.connection;
-  console.log("✅ Connected to MongoDB");
-  return cachedDb;
 };
 
-// Health check route
+// Health check
 app.get("/", (req, res) => {
   res.json({ 
     message: "Backend is running",
@@ -49,11 +43,8 @@ app.use("/api/todo", todoItemsRouter);
 // Error handling
 app.use(errorController.pageNotFound);
 
-// Export for Vercel
+// Vercel handler
 module.exports = async (req, res) => {
-  // Connect to database before handling request
-  if (mongoose.connection.readyState !== 1) {
-    await connectToDatabase();
-  }
+  await connectToDatabase();
   return app(req, res);
 };
