@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "app.js",
   "scripts": {
-    "tailwind": "tailwindcss -i ./views/input.css -o ./public/style.css",
+    "tailwind": "npx tailwindcss -i ./views/input.css -o ./public/style.css",
     "build": "npm run tailwind",
     "start": "node app.js",
     "dev": "concurrently \"npm run tailwind --watch\" \"nodemon app.js\""
