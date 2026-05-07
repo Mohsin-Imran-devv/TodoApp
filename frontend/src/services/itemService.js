@@ -1,5 +1,5 @@
 // Change this line at the top of itemService.js
-const API_BASE_URL = 'http://localhost:3000/api/todo'; // Updated to match your backend route
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/todo`; // Updated to match your backend route
 
 export const markItemAsCompleted = async (id) => {
   try {
